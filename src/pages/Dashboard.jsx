@@ -3,6 +3,8 @@ import { useTheme } from '../hooks/useTheme';
 // import { collection, query, where, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 // import { db } from '../firebase';
 
+const bookingsApiUrl = import.meta.env.VITE_BOOKINGS_API_URL;
+
 const Dashboard = ({ user }) => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +19,7 @@ const Dashboard = ({ user }) => {
 
   const fetchBookings = async () => {
     try {
-      const res = await fetch(`https://7d6a1fd2-a733-4530-9a29-9744334481ce-00-341w6ruqr3jxg.pike.replit.dev/api/bookings?user_id=${user.uid}`);
+      const res = await fetch(`${bookingsApiUrl}?user_id=${user.uid}`);
       const data = await res.json();
       setBookings(Array.isArray(data) ? data : []);
     } catch (error) {

@@ -30,8 +30,11 @@ const Booking = () => {
   const [error, setError] = useState('');
   const [showImageModal, setShowImageModal] = useState(false);
 
+  const courtsApiUrl = import.meta.env.VITE_COURTS_API_URL;
+  const bookingsApiUrl = import.meta.env.VITE_BOOKINGS_API_URL;
+
   useEffect(() => {
-    fetch(import.meta.env.VITE_COURTS_API_URL)
+    fetch(courtsApiUrl)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setCourts(data);
@@ -96,7 +99,7 @@ const Booking = () => {
 
     // POST booking to API
     try {
-      const res = await fetch('https://7d6a1fd2-a733-4530-9a29-9744334481ce-00-341w6ruqr3jxg.pike.replit.dev/api/bookings', {
+      const res = await fetch(bookingsApiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
