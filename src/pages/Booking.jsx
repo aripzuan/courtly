@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTheme } from '../hooks/useTheme';
 import badmintonImg from '../assets/badminton.jpg';
 import basketballImg from '../assets/basketball.jpg';
 import futsalImg from '../assets/futsal.jpg';
@@ -17,6 +18,7 @@ const Booking = () => {
   const { courtType } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth(); // get user from context/hook
+  const { isDarkMode } = useTheme();
   
   const [courts, setCourts] = useState([]);
   const [date, setDate] = useState('');
@@ -143,8 +145,8 @@ const Booking = () => {
     : timeSlots;
 
   return (
-    <div className="booking-page-bg">
-      <div className="booking-card-wide">
+    <div className={`booking-page-bg${isDarkMode ? ' bg-dark text-white' : ''}`}>
+      <div className={`booking-card-wide${isDarkMode ? ' bg-dark text-white border-secondary' : ''}`} style={{ boxShadow: '0 4px 32px rgba(0,0,0,0.18)' }}>
         <div className="booking-sport-image-wide-wrap">
           <img
             src={courtImages[courtType]}
@@ -173,11 +175,12 @@ const Booking = () => {
               onChange={(e) => setDate(e.target.value)}
               min={getMinDate()}
               required
+              className={`form-control${isDarkMode ? ' bg-dark text-white border-secondary' : ''}`}
             />
           </div>
           <div className="form-group">
             <label>Start Time</label>
-            <select value={timeStart} onChange={(e) => setTimeStart(e.target.value)} required>
+            <select value={timeStart} onChange={(e) => setTimeStart(e.target.value)} required className={`form-control${isDarkMode ? ' bg-dark text-white border-secondary' : ''}`}>
               <option value="">Select time</option>
               {timeSlots.map(time => (
                 <option key={time} value={time}>{time}</option>
@@ -186,7 +189,7 @@ const Booking = () => {
           </div>
           <div className="form-group">
             <label>End Time</label>
-            <select value={timeEnd} onChange={(e) => setTimeEnd(e.target.value)} required>
+            <select value={timeEnd} onChange={(e) => setTimeEnd(e.target.value)} required className={`form-control${isDarkMode ? ' bg-dark text-white border-secondary' : ''}`}>
               <option value="">Select time</option>
               {filteredEndTimes.map(time => (
                 <option key={time} value={time}>{time}</option>
@@ -200,7 +203,7 @@ const Booking = () => {
             <div className="form-group">
               <label>Available Courts</label>
               {courtNumbers.length > 0 ? (
-                <select value={courtNumber} onChange={(e) => setCourtNumber(e.target.value)} required>
+                <select value={courtNumber} onChange={(e) => setCourtNumber(e.target.value)} required className={`form-control${isDarkMode ? ' bg-dark text-white border-secondary' : ''}`}>
                   <option value="">Select court</option>
                   {courtNumbers.map(num => (
                     <option key={num} value={num}>Court {num}</option>
@@ -216,18 +219,21 @@ const Booking = () => {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              className={`form-control${isDarkMode ? ' bg-dark text-white border-secondary' : ''}`}
               placeholder="Any special requests or notes..."
             />
           </div>
           {totalPrice > 0 && isValidDuration() && (
-            <div className="price-summary">
+            <div className={`price-summary mt-4${isDarkMode ? ' bg-dark-subtle text-white border-secondary' : ''}`} style={{ border: '1px solid #dee2e6' }}>
               <h3>Booking Summary</h3>
               <div className="price-details">
-                <p><strong>Court Type:</strong> {courtNames[courtType]}</p>
-                <p><strong>Duration:</strong> {timeStart && timeEnd ? `${timeStart} - ${timeEnd}` : ''}</p>
-                <p><strong>Hours:</strong> {timeStart && timeEnd ? `${parseInt(timeEnd.split(':')[0]) - parseInt(timeStart.split(':')[0])}` : ''}</p>
-                <p><strong>Price per Hour:</strong> RM{pricePerHour}</p>
-                <p className="total-price"><strong>Total Price:</strong> RM{totalPrice}</p>
+                <p><span>Court Type:</span> <span>{courtNames[courtType]}</span></p>
+                <p><span>Duration:</span> <span>{timeStart} - {timeEnd}</span></p>
+                <p><span>Hours:</span> <span>{isValidDuration() ? parseInt(timeEnd.split(':')[0]) - parseInt(timeStart.split(':')[0]) : 0}</span></p>
+                <p><span>Price per Hour:</span> <span>RM{pricePerHour}</span></p>
+              </div>
+              <div className="total-price" style={{ color: '#27ae60' }}>
+                <span>Total Price:</span> <span>RM{totalPrice}</span>
               </div>
             </div>
           )}

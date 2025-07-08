@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../hooks/useTheme';
 import badmintonImg from '../assets/badminton.jpg';
 import basketballImg from '../assets/basketball.jpg';
 import futsalImg from '../assets/futsal.jpg';
@@ -15,6 +16,7 @@ const courtImages = {
 const LandingPage = ({ user }) => {
   const [courts, setCourts] = useState([]);
   const [error, setError] = useState('');
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     fetch(import.meta.env.VITE_COURTS_API_URL)
@@ -40,7 +42,7 @@ const LandingPage = ({ user }) => {
   }, {}) : {};
 
   return (
-    <div className="landing">
+    <div className={`landing${isDarkMode ? ' bg-dark text-white' : ''}`}>
       <div className="hero">
         <h1>Welcome to Courtly</h1>
         <p>Book your favorite sports courts with ease</p>
@@ -57,7 +59,7 @@ const LandingPage = ({ user }) => {
         {error && <div className="error-message">{error}</div>}
         <div className="courts-grid">
           {Object.entries(courtsByType).map(([type, courtsArr]) => (
-            <div key={type} className="court-card">
+            <div key={type} className={`court-card${isDarkMode ? ' bg-dark text-white border-secondary' : ''}`}>
               <div className="court-image-wrap">
                 <img src={courtImages[type]} alt={type + ' court'} className="court-image" />
               </div>

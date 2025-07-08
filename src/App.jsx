@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
@@ -33,17 +34,19 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <Navbar user={user} />
-      <Routes>
-        <Route path="/" element={<LandingPage user={user} />} />
-        <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
-        <Route path="/signup" element={!user ? <SignUp /> : <Navigate to="/dashboard" />} />
-        <Route path="/dashboard" element={user ? <Dashboard user={user} /> : <Navigate to="/login" />} />
-        <Route path="/booking/:courtType" element={user ? <Booking user={user} /> : <Navigate to="/login" />} />
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
-    </div>
+    <ThemeProvider>
+      <div className="App">
+        <Navbar user={user} />
+        <Routes>
+          <Route path="/" element={<LandingPage user={user} />} />
+          <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
+          <Route path="/signup" element={!user ? <SignUp /> : <Navigate to="/dashboard" />} />
+          <Route path="/dashboard" element={user ? <Dashboard user={user} /> : <Navigate to="/login" />} />
+          <Route path="/booking/:courtType" element={user ? <Booking user={user} /> : <Navigate to="/login" />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+      </div>
+    </ThemeProvider>
   );
 }
 

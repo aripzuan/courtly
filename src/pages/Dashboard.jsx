@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTheme } from '../hooks/useTheme';
 // import { collection, query, where, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 // import { db } from '../firebase';
 
@@ -8,6 +9,7 @@ const Dashboard = ({ user }) => {
   const [editingBooking, setEditingBooking] = useState(null);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState('');
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     fetchBookings();
@@ -126,7 +128,7 @@ const Dashboard = ({ user }) => {
 
   if (loading) {
     return (
-      <div className="dashboard-bg">
+      <div className={`dashboard-bg${isDarkMode ? ' bg-dark text-white' : ''}`}>
         <h2 style={{textAlign: 'center', marginBottom: '2.2rem', fontWeight: 700}}>My Bookings</h2>
         <div className="container">
           <div className="loading">Loading your bookings...</div>
@@ -136,11 +138,14 @@ const Dashboard = ({ user }) => {
   }
 
   return (
-    <div className="dashboard-bg">
+    <div className={`dashboard-bg${isDarkMode ? ' bg-dark text-white' : ''}`}>
       <h2 style={{textAlign: 'center', marginBottom: '2.2rem', fontWeight: 700}}>My Bookings</h2>
       {bookings.length === 0 ? (
-        <div className="no-bookings">
-          <p>You don't have any bookings yet.</p>
+        <div className="no-bookings d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '40vh' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>📅</div>
+          <p className={isDarkMode ? 'text-secondary' : 'text-muted'} style={{ fontSize: '1.25rem', textAlign: 'center', maxWidth: 400 }}>
+            You don't have any bookings yet.
+          </p>
         </div>
       ) : (
         <div className="bookings-list">
@@ -161,7 +166,7 @@ const Dashboard = ({ user }) => {
               ? timeSlots.filter(time => parseInt(time.split(':')[0]) > parseInt(editingBooking.time_start.split(':')[0]))
               : timeSlots;
             return (
-              <div key={booking.id} className="booking-card" style={{ borderLeft: `8px solid ${style.borderColor}` }}>
+              <div key={booking.id} className={`booking-card${isDarkMode ? ' bg-dark text-white border-secondary' : ''}`} style={{ borderLeft: `8px solid ${style.borderColor}` }}>
                 {editingBooking?.id === booking.id ? (
                   // Edit Form
                   <div className="edit-booking-form">
